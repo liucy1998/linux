@@ -30,6 +30,10 @@
 #define KVM_HC_SEND_IPI		10
 #define KVM_HC_SCHED_YIELD		11
 
+#define KVM_HC_SHM_READ 28
+#define KVM_HC_SHM_WRITE 29
+#define KVM_HC_PIPE_READ 30
+#define KVM_HC_PIPE_WRITE 31
 /*
  * hypercalls use architecture specific
  */

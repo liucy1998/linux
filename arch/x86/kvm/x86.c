@@ -7399,6 +7399,54 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 		a3 &= 0xFFFFFFFF;
 	}
 
+	// -------------- HANDLE SHM HYPERCALL ------------
+	// Put it here since handle_vmcall checks if caller is in ring 0, which is not.
+
+	if (nr == KVM_HC_SHM_READ) {
+		vcpu->run->exit_reason = KVM_EXIT_SHM_READ;
+		vcpu->run->hypercall.args[0] = a0;
+		vcpu->run->hypercall.args[1] = a1;
+		vcpu->run->hypercall.args[2] = a2;
+		vcpu->run->hypercall.args[3] = a3;
+		kvm_skip_emulated_instruction(vcpu);
+		++vcpu->stat.hypercalls;
+		// return 0 to trap to QEMU
+		return 0;
+	}
+	else if (nr == KVM_HC_SHM_WRITE) {
+		vcpu->run->exit_reason = KVM_EXIT_SHM_WRITE;
+		vcpu->run->hypercall.args[0] = a0;
+		vcpu->run->hypercall.args[1] = a1;
+		vcpu->run->hypercall.args[2] = a2;
+		vcpu->run->hypercall.args[3] = a3;
+		kvm_skip_emulated_instruction(vcpu);
+		++vcpu->stat.hypercalls;
+		// return 0 to trap to QEMU
+		return 0;
+	}
+	else if (nr == KVM_HC_PIPE_READ) {
+		vcpu->run->exit_reason = KVM_EXIT_PIPE_READ;
+		vcpu->run->hypercall.args[0] = a0;
+		vcpu->run->hypercall.args[1] = a1;
+		vcpu->run->hypercall.args[2] = a2;
+		vcpu->run->hypercall.args[3] = a3;
+		kvm_skip_emulated_instruction(vcpu);
+		++vcpu->stat.hypercalls;
+		// return 0 to trap to QEMU
+		return 0;
+	}
+	else if (nr == KVM_HC_PIPE_WRITE) {
+		vcpu->run->exit_reason = KVM_EXIT_PIPE_WRITE;
+		vcpu->run->hypercall.args[0] = a0;
+		vcpu->run->hypercall.args[1] = a1;
+		vcpu->run->hypercall.args[2] = a2;
+		vcpu->run->hypercall.args[3] = a3;
+		kvm_skip_emulated_instruction(vcpu);
+		++vcpu->stat.hypercalls;
+		// return 0 to trap to QEMU
+		return 0;
+	}
+
 	if (kvm_x86_ops->get_cpl(vcpu) != 0) {
 		ret = -KVM_EPERM;
 		goto out;
