@@ -7446,6 +7446,17 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 		// return 0 to trap to QEMU
 		return 0;
 	}
+	else if (nr == KVM_HC_VMSTATE) {
+		vcpu->run->exit_reason = KVM_EXIT_VMSTATE;
+		vcpu->run->hypercall.args[0] = a0;
+		vcpu->run->hypercall.args[1] = a1;
+		vcpu->run->hypercall.args[2] = a2;
+		vcpu->run->hypercall.args[3] = a3;
+		kvm_skip_emulated_instruction(vcpu);
+		++vcpu->stat.hypercalls;
+		// return 0 to trap to QEMU
+		return 0;
+	}
 
 	if (kvm_x86_ops->get_cpl(vcpu) != 0) {
 		ret = -KVM_EPERM;

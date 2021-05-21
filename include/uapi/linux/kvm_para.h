@@ -34,6 +34,7 @@
 #define KVM_HC_SHM_WRITE 29
 #define KVM_HC_PIPE_READ 30
 #define KVM_HC_PIPE_WRITE 31
+#define KVM_HC_VMSTATE 32
 /*
  * hypercalls use architecture specific
  */
